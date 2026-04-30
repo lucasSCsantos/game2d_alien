@@ -2,18 +2,31 @@ import pygame
 import sys
 
 from alien import Alien
+import alien
 
 class FleetManager:
     """Responsavel por gerenciar os alienigenas presentes no jogo"""
-    def __init__(self, screen, settings, ship):
+    def __init__(self, screen, settings, ship, alien_class=Alien):
         self.screen = screen
         self.settings = settings
         self.aliens = pygame.sprite.Group()
         self.ship = ship
+        self.alien_class = alien_class
+
+    def _create_alien(self, alien_number, row_number, alien_width, alien_height) -> None:
+        """Cria um alienígena e o posiciona na linha."""
+        alien = self.alien_class(self.screen, self.settings)
+        alien_width = alien.rect.width
+        alien.x = alien_width + 2 * alien_width * alien_number
+        alien.rect.x = alien.x 
+        alien_height = alien.rect.height
+        alien.y = alien_height + 2 * alien_height * row_number
+        alien.rect.y = alien.y
+        self.aliens.add(alien)
 
     def create_fleet(self) -> None:
         """Cria uma frota de alienígenas."""
-        alien = Alien(self.screen, self.settings)
+        alien = self.alien_class(self.screen, self.settings)
         alien_width = alien.rect.width
         alien_height = alien.rect.height
         available_space_x = self.settings.screen_width - (2 * alien_width)
@@ -26,12 +39,7 @@ class FleetManager:
 
         for row_number in range(number_rows):
             for alien_number in range(number_aliens_x):
-                alien = Alien(self.screen, self.settings)
-                alien.x = alien_width + 2 * alien_width * alien_number
-                alien.rect.x = alien.x
-                alien.y = alien_height + 2 * alien_height * row_number
-                alien.rect.y = alien.y
-                self.aliens.add(alien)
+               self._create_alien(alien_number, row_number, alien_width, alien_height)
 
     def _update_aliens(self):
         """Atualiza a posição de todos os alienígenas da frota."""
