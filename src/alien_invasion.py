@@ -1,6 +1,7 @@
 import sys
 import pygame
 
+from alien_invasion_refactored import AlienInvasion
 from settings import Settings
 from ship import Ship
 from bullet import Bullet
